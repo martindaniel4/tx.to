@@ -50,7 +50,7 @@ titre_2.append("svg:circle")
 	
 d3.csv("data/txto.csv", function(data) {
   
-     var  date_format = d3.time.format("%d %b %Y"),
+     var  date_format = d3.time.format("Le %d à %Hh%M"),
 	  date_day_format = d3.time.format("%d");
   
 
@@ -110,16 +110,18 @@ jours_f = [{
 }],
     
     format_days = d3.time.format("%a"),
+    format_month = d3.time.format("%b  %Y")
+    month = d3.nest().key(function(d) {return format_month(d.date);}).rollup(function(d) {return d.length;}).entries(tab),
+    text_month = d3.nest().key(function(d) {return format_month(d.date);}).map(tab),
     day_week = d3.nest().key(function(d) {return format_days(d.date);}).rollup(function(d) {return d.length;}).entries(tab),
 	day_hour = d3.nest().key(function(d) {return (d.hour);}).rollup(function(d) {return d.length;}).entries(tab),
-	day_hour2 = d3.nest().key(function(d) {return (d.hour);}).rollup(function(d) {return d.length;}).map(tab),
 	correspondance = d3.nest().key(function(d) {return d.a;}).rollup(function(d) {return d[0].f;}).map(jours_f),
 	days = {},
 	hours = {},
 	metrics_days = [],
     metrics_hours = [],
 	metrics = [];
-	
+		
 type.forEach(function(d, i) {
 
 metrics.push({
@@ -205,10 +207,7 @@ day_hour.forEach(
  	
  })
 })
- 
- console.log(metrics_hours)
- 
- 
+
   // Nombre de textos envoyés
   
   var max_nombre = d3.max(metrics, function(d) {return d.nombre;}),
@@ -465,12 +464,28 @@ graph2_l.append("text").text("à "+day_hour[pos_max_hour].key+" heures")
 	.attr("x",60)
 	.attr("class","legende")
   
+ // Insérer les mois
+ 
+ 
+ var mois = d3.select("#texts").append("div").selectAll("div")
+ 				.data(month)
+ 			.enter().append("div")
+ 			.attr("class","month")
+ 			.attr("width",w)
+ 			.attr("transform","translate("+0+","+50+")");
+ 			
+ mois.append("text").text(function(d) {console.log(d); return d.key;})
+ 
  // Insérer les textos
   
-  var texts = d3.select("#texts").selectAll(".texts")
-	.data(tab);
+  
+  var texts = mois.selectAll(".texts")
+	.data(function(d) {return text_month[d.key];});
 	
   texts.enter().append("div")
+  	.attr("class","dates")
+  	.text(function(d) {return date_format(d.date);})
+  		.append("div")
 	.attr("class", function(d) {  
 	
 	if ( d.type == 1) {return "lui";}
@@ -480,7 +495,7 @@ graph2_l.append("text").text("à "+day_hour[pos_max_hour].key+" heures")
 			{ return "moi";}
 	})
 	
-	.text(function(d) {return d.body + " " +date_format(d.date) ;});
+	.text(function(d) {return d.body;});
 	
   
 /* var nest = d3.nest().key(function(d) {return d.type;}).map(tab);  
