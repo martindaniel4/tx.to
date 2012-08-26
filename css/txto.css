@@ -1,0 +1,119 @@
+.text {
+
+font-family: "Helvetica Neue", Helvetica, sans-serif;
+font-size:14px;
+
+}
+
+
+.cadre
+{
+	
+width:300px; 
+margin-left:auto; 
+margin-right:auto; 
+border-style:solid; 
+border-width:3px; 
+text-align:center;
+	
+}
+
+.nombre {
+	
+font-size:11px; 
+font-family:Helvetica, sans-serif; 	
+margin-top:30px;
+margin-left:10px;
+	
+}
+
+.longueur {
+	
+font-size:11px; 
+font-family:Helvetica, sans-serif; 	
+margin-top:15;
+margin-left:70;
+	
+}
+
+
+.legende{
+
+font-family: "Helvetica Neue", Helvetica, sans-serif;
+font-size:16px;
+text-rendering: optimizelegibility;
+
+}
+
+.circle_1 {
+fill:black
+}
+
+.circle_2 {
+fill:none;
+stroke:black;
+stroke-width:2;
+}
+
+.graph {
+	
+margin-left:35px;
+margin-top:20px; 
+font-size:11px; 
+font-family:Helvetica, sans-serif; 
+width: 300px;
+
+
+}
+
+.lui {
+font-family: "Helvetica Neue", Helvetica, sans-serif;
+font-size:14px;
+text-align:right;
+margin-bottom:20px
+
+}
+
+.moi {
+font-family: "Helvetica Neue", Helvetica, sans-serif;
+font-size:14px;
+text-align:left;
+margin-bottom:20px;
+
+}
+
+.titre {
+font-family: "Helvetica Neue", Helvetica, sans-serif;
+font-size:35px;
+text-rendering: optimizelegibility;
+margin-top:20px;
+}
+
+
+.texts {
+
+margin-bottom:20px;
+
+}
+
+.sender{
+width:150px;
+float:left;
+
+}
+
+.receiver{
+width:150px;
+float:left;
+}
+
+.line{
+stroke:black;
+fill:none;
+shape-rendering:optimizeSpeed;
+}
+
+.rule line {
+  stroke: #000;
+  stroke-width:1px;
+}
