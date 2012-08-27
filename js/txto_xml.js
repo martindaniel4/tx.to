@@ -5,13 +5,13 @@
 		h_graph_line = 20,
 		w = 300,
 		r = 5,
-		w_graph = 100,
+		w_graph = 80,
 		h_bloc = 120,
-		offset_2 = w/2 * 0.8,
+		offset_2 = w/2*1.3 ,
 		pourcent = d3.format("%"),
 		un = "Martin",
-		deux="Mathias",
-		numero=672143617;
+		deux="Catherine",
+		numero=664130206;
 		
 
 // Titre
@@ -19,39 +19,61 @@
 var titre = d3.select("#titre").append("svg:svg")
 		.attr("width", w)
 		.attr("height", 100)
-		.attr("class","titre");
-	
-titre.append("text").text(un)
-		.attr("y",40)
-		.attr("x", margin_left);
+			.append("g")
+		.attr("transform", "translate("+ 0 +"," + 20 + ")")
 
-titre.append("svg:circle")
-	.attr("cx",12)
-	.attr("cy",27)
+txto = titre.append("g");
+
+txto.append("text").text("Tx.to")
+	.attr("x",margin_left)
+	.attr("y",62)
+	.attr("class","txto");
+
+titre.append("svg:line")
+	.attr("x1",160)
+	.attr("x2",160)
+	.attr("y1",20)
+	.attr("y2",70)
+	.attr("stroke","black")
+	.attr("stroke-width",3)
+	.attr("shape-rendering","CrispEdges")
+
+var nom = titre.append("g")
+		.attr("transform", "translate("+ offset_2 +"," + 0 + ")")
+		.attr("class","nom");
+	
+nom.append("text").text(un)
+		.attr("y",40)
+		.attr("x", 0);
+
+nom.append("svg:circle")
+	.attr("cx", -10)
+	.attr("cy",32)
 	.attr("r",r)
 	.attr("fill","black");
 	
-var titre_2 = titre.append("g")
-	 .attr("transform", "translate("+ offset_2 +"," + 10 + ")")
+var titre_2 = nom.append("g")
+	 .attr("transform", "translate("+ 0 +"," + 60 + ")")
 	
 titre_2.append("text").text(deux)
-		.attr("x", 10 )
-		.attr("y", 80);
+		.attr("x", 0 )
+		.attr("y", 10);
 		
 titre_2.append("svg:circle")
-	.attr("cx",0)
-	.attr("cy",68)
+	.attr("cx",-10)
+	.attr("cy",3)
 	.attr("r",r)
 	.attr("stroke","black")
 	.attr("stroke-width",2)
 	.attr("fill","none");
-	
-	
+
 // Calculs des metrics & data wrangling
 	
 d3.xml("data/smses.xml", function(data) {
   
-     var  date_format = d3.time.format("%d %b %Y"),
+  console.log(data)
+  
+     var  date_format = d3.time.format("Le %d à %Hh%M"),
 	  date_day_format = d3.time.format("%d");
   
 var sms = d3.select(data).selectAll("smses").selectAll("sms")[0],
@@ -82,9 +104,11 @@ if (d.getAttribute("address").match(num))
   });
   
   
- var type = d3.nest().key(function(d) {return d.type;}).entries(tab),
+ var type = d3.nest().key(function(d) {return d.type;}).entries(tab);
   
-     jours = ["Mon, 13 Aug 2012 00:00:00 GMT",
+ type.forEach(function(d,i) {if ((d.key!=1)&&(d.key!=2)) {type.splice(i,i+1)} }) 
+  
+ var jours = ["Mon, 13 Aug 2012 00:00:00 GMT",
 "Tue, 14 Aug 2012 00:00:00 GMT",
 "Wed, 15 Aug 2012 00:00:00 GMT",
 "Thu, 16 Aug 2012 00:00:00 GMT",
@@ -214,6 +238,9 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
 }
 	
 )
+
+ console.log(metrics)
+ 
 
   // Nombre de textos envoyés
   
@@ -397,7 +424,7 @@ graph1_l.append("text").text(correspondance[metrics_days[pos_max_day].day])
  var  max_hour = d3.max(day_hour, function(d) {return d.values;}),
   	  subarray_hours = [],
       height_hour = d3.scale.linear().domain([0, max_hour]).range([10,100]),
-	  x_hour = d3.scale.linear().domain([0, 23]).range([0 , w_graph]),
+	  x_hour = d3.scale.linear().domain([0, 24]).range([0 , w_graph]),
 	  x_hour_inter = d3.scale.linear().domain([0,24]).ticks(5),
 	  y_hour = d3.scale.linear().domain([0, max_hour]).range([0 , h_graph_line]);
 
@@ -421,7 +448,7 @@ var pos_max_hour = subarray_hours.indexOf(d3.max(subarray_hours));
 				.attr("width",300),
    
      graph2 = distrib2.append("svg:g")
-				.attr("transform","translate("+140+","+0+")");
+				.attr("transform","translate("+160+","+0+")");
 
  var rules2 = graph2.selectAll("g.rule")
 	.data(x_hour_inter)
@@ -461,24 +488,38 @@ graph2_l.append("svg:text")
 	.text(pourcent(subarray_hours[pos_max_hour]/d3.sum(subarray_hours)))
 	.attr("class","titre");
 	
-graph2_l.append("text").text("envoyés")
+graph2_l.append("text").text("envoyés à")
 	.attr("y",h_graph*0.6)
-	.attr("x",60)
+	.attr("x",75)
 	.attr("class","legende")
 	
-graph2_l.append("text").text("à "+metrics_hours[pos_max_hour].hour+" heures")
+graph2_l.append("text").text(metrics_hours[pos_max_hour].hour+" heures")
 	.attr("y",h_graph)
-	.attr("x",60)
+	.attr("x",75)
 	.attr("class","legende")
 
-
-
+ // Insérer les mois
+ 
+ 
+ var mois = d3.select("#texts").append("div").selectAll("div")
+ 				.data(month)
+ 			.enter().append("div")
+ 			.attr("class","month")
+ 			.attr("width",w)
+ 			.attr("transform","translate("+0+","+50+")");
+ 			
+ mois.append("text").text(function(d) {return d.key;})
+ 
  // Insérer les textos
   
-  var texts = d3.select("#texts").selectAll(".texts")
-	.data(tab);
+  
+  var texts = mois.selectAll(".texts")
+	.data(function(d) {return text_month[d.key];});
 	
   texts.enter().append("div")
+  	.attr("class","dates")
+  	.text(function(d) {return date_format(d.date);})
+  		.append("div")
 	.attr("class", function(d) {  
 	
 	if ( d.type == 1) {return "lui";}
@@ -488,7 +529,8 @@ graph2_l.append("text").text("à "+metrics_hours[pos_max_hour].hour+" heures")
 			{ return "moi";}
 	})
 	
-	.text(function(d) {return d.body + " " +date_format(d.date) ;});
+	.text(function(d) {return d.body;});
+	
 	
   
 /* var nest = d3.nest().key(function(d) {return d.type;}).map(tab);  
