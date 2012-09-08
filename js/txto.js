@@ -5,6 +5,7 @@
 		h_graph_line = 20,
 		w = 300,
 		r = 5,
+		n=100,
 		w_graph = 80,
 		h_bloc = 120,
 		offset_2 = w/2*1.3 ,
@@ -96,6 +97,10 @@ data.forEach(function(d) {
 	}
 	
   });
+  
+   tab = tab.slice(0,n)
+  
+  console.log(tab);
   
  var type = d3.nest().key(function(d) {return d.type;}).entries(tab);
  
