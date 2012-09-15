@@ -1,17 +1,19 @@
 	var tab =[],
-		mot = ".*",
-		margin_left = 25,
+		tab_s=[],
+		margin_left = 10,
 		h_graph = 50,
 		h_graph_line = 20,
-		w = 300,
+		w = 380,
 		r = 5,
-		w_graph = 80,
+		w_graph = 130,
+		w_bar = 150,
 		h_bloc = 120,
-		offset_2 = w/2*1.3 ,
+		offset_2 = 260,
 		pourcent = d3.format("%"),
 		un = "Martin",
-		deux="Catherine",
-		numero=664130206;
+		deux="Martin",
+		numero=123,
+		nombre_max = 2;
 		
 
 // Titre
@@ -30,8 +32,8 @@ txto.append("text").text("Tx.to")
 	.attr("class","txto");
 
 titre.append("svg:line")
-	.attr("x1",160)
-	.attr("x2",160)
+	.attr("x1",w/2)
+	.attr("x2",w/2)
 	.attr("y1",20)
 	.attr("y2",70)
 	.attr("stroke","black")
@@ -44,7 +46,7 @@ var nom = titre.append("g")
 	
 nom.append("text").text(un)
 		.attr("y",40)
-		.attr("x", 0);
+		.attr("x", 10);
 
 nom.append("svg:circle")
 	.attr("cx", -10)
@@ -56,7 +58,7 @@ var titre_2 = nom.append("g")
 	 .attr("transform", "translate("+ 0 +"," + 60 + ")")
 	
 titre_2.append("text").text(deux)
-		.attr("x", 0 )
+		.attr("x", 10 )
 		.attr("y", 10);
 		
 titre_2.append("svg:circle")
@@ -70,8 +72,6 @@ titre_2.append("svg:circle")
 // Calculs des metrics & data wrangling
 	
 d3.xml("data/smses.xml", function(data) {
-  
-  console.log(data)
   
      var  date_format = d3.time.format("Le %d à %Hh%M"),
 	  date_day_format = d3.time.format("%d");
@@ -104,6 +104,8 @@ if (d.getAttribute("address").match(num))
   });
   
   
+    tab_s = tab.slice(0,nombre_max);
+
  var type = d3.nest().key(function(d) {return d.type;}).entries(tab);
   
  type.forEach(function(d,i) {if ((d.key!=1)&&(d.key!=2)) {type.splice(i,i+1)} }) 
@@ -141,8 +143,8 @@ jours_f = [{
     
     format_days = d3.time.format("%a"),
     format_month = d3.time.format("%b  %Y")
-    month = d3.nest().key(function(d) {return format_month(d.date);}).rollup(function(d) {return d.length;}).entries(tab),
-    text_month = d3.nest().key(function(d) {return format_month(d.date);}).map(tab),
+    month = d3.nest().key(function(d) {return format_month(d.date);}).rollup(function(d) {return d.length;}).entries(tab_s),
+    text_month = d3.nest().key(function(d) {return format_month(d.date);}).map(tab_s),
     day_week = d3.nest().key(function(d) {return format_days(d.date);}).rollup(function(d) {return d.length;}).entries(tab),
 	day_hour = d3.nest().key(function(d) {return (d.hour);}).rollup(function(d) {return d.length;}).entries(tab),
 	correspondance = d3.nest().key(function(d) {return d.a;}).rollup(function(d) {return d[0].f;}).map(jours_f),
@@ -239,13 +241,10 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
 	
 )
 
- console.log(metrics)
- 
-
   // Nombre de textos envoyés
   
   var max_nombre = d3.max(metrics, function(d) {return d.nombre;}),
-      w_nombre = d3.scale.linear().domain([0, max_nombre]).range([0,80]), 
+      w_nombre = d3.scale.linear().domain([0, max_nombre]).range([0,w_bar]), 
   
       nombre = d3.select("#nombre").append("svg:svg")
   		.attr("width",w)
@@ -257,7 +256,7 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
   		.attr("class","titre")
   		
   var nombre_l = nombre.append("g")
-  		.attr("transform", "translate("+margin_left*4+"," + 16 + ")")
+  		.attr("transform", "translate("+(margin_left + 100)+"," + 16 + ")")
   		.attr("class","legende");
   		
   nombre_l.append("text").text("textos")
@@ -272,7 +271,7 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
  .enter().append("svg:circle")
  	.attr("r",r)
  	.attr("cy",function(d, i) {return i * 25 + 49; })
- 	.attr("cx",55)
+ 	.attr("cx",margin_left + 20)
  	.attr("class", function(d) {if (d.type == 1) {return "circle_1";} else {return "circle_2";}})
 
   nombre_g.selectAll("rect")
@@ -281,19 +280,19 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
  	.attr("width",function(d) {return w_nombre(d.nombre);})
  	.attr("height",10)
  	.attr("y",function(d, i) {return i * 25 + 44; })
- 	.attr("x",70)
+ 	.attr("x",50)
  	
   nombre_g.selectAll("g.text")
   	.data(metrics)
  .enter().append("svg:text")
  	.text(function(d) {return d.nombre;})
  	.attr("y",function(d, i) {return i * 25 + 53; })
- 	.attr("x",160)
+ 	.attr("x",w_bar*1.5)
  
  // Longueur moyenne des textos
   
   var max_longueur = d3.max(metrics, function(d) {return d.longueur;}),
-      w_longueur = d3.scale.linear().domain([0, max_longueur]).range([0,80]), 
+      w_longueur = d3.scale.linear().domain([0, max_longueur]).range([0,w_bar]), 
   
       longueur = d3.select("#longueur").append("svg:svg")
   		.attr("width",w)
@@ -305,7 +304,7 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
   		.attr("class","titre")
   		
   var longueur_l = longueur.append("g")
-  		.attr("transform", "translate("+margin_left*4+"," + 16 + ")")
+  		.attr("transform", "translate("+(margin_left + 100)+"," + 16 + ")")
   		.attr("class","legende");
   		
   longueur_l.append("text").text("longueur")
@@ -320,7 +319,7 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
  .enter().append("svg:circle")
  	.attr("r",r)
  	.attr("cy",function(d, i) {return i * 25 + 49; })
- 	.attr("cx",55)
+ 	.attr("cx",margin_left + 20)
  	.attr("class", function(d) {if (d.type == 1) {return "circle_1";} else {return "circle_2";}})
 
   longueur_g.selectAll("rect")
@@ -329,14 +328,14 @@ longueur:parseFloat(d3.mean(d.values,function(z){return z.body.length;}).toFixed
  	.attr("width",function(d) {return w_longueur(d.longueur);})
  	.attr("height",10)
  	.attr("y",function(d, i) {return i * 25 + 44; })
- 	.attr("x",70)
+ 	.attr("x",50)
  	
   longueur_g.selectAll("g.text")
   	.data(metrics)
  .enter().append("svg:text")
  	.text(function(d) {return d.longueur;})
  	.attr("y",function(d, i) {return i * 25 + 53; })
- 	.attr("x",160)
+ 	.attr("x",w_bar*1.5)
  	 
   // Graphe de distribution par jour de la semaine
   
@@ -364,7 +363,7 @@ var pos_max_day = subarray_days.indexOf(d3.max(subarray_days));
  
  var distrib1 = d3.select("#graph1").append("svg:svg")
 				.attr("height", h_graph*1.8)
-				.attr("width",300)
+				.attr("width",w)
  
  var graph1 = distrib1
 			.append("svg:g");
@@ -411,12 +410,12 @@ graph1_l.append("text")
 
 graph1_l.append("text").text("envoyés")
 	.attr("y",h_graph*0.6)
-	.attr("x",80)
+	.attr("x",95)
 	.attr("class","legende")
 	
 graph1_l.append("text").text(correspondance[metrics_days[pos_max_day].day])
 	.attr("y",h_graph*0.9)
-	.attr("x",80)
+	.attr("x",95)
 	.attr("class","legende")
 
 // Graphe de distribution par heure
@@ -445,10 +444,10 @@ var pos_max_hour = subarray_hours.indexOf(d3.max(subarray_hours));
     
  var distrib2 = d3.select("#graph2").append("svg:svg")
 				.attr("height", h_graph*1.5)
-				.attr("width",300),
+				.attr("width",w),
    
      graph2 = distrib2.append("svg:g")
-				.attr("transform","translate("+160+","+0+")");
+				.attr("transform","translate("+180+","+0+")");
 
  var rules2 = graph2.selectAll("g.rule")
 	.data(x_hour_inter)
@@ -490,12 +489,12 @@ graph2_l.append("svg:text")
 	
 graph2_l.append("text").text("envoyés à")
 	.attr("y",h_graph*0.6)
-	.attr("x",75)
+	.attr("x",90)
 	.attr("class","legende")
 	
 graph2_l.append("text").text(metrics_hours[pos_max_hour].hour+" heures")
 	.attr("y",h_graph)
-	.attr("x",75)
+	.attr("x",90)
 	.attr("class","legende")
 
  // Insérer les mois
@@ -532,95 +531,8 @@ graph2_l.append("text").text(metrics_hours[pos_max_hour].hour+" heures")
 	.text(function(d) {return d.body;});
 	
 	
+ // Afficher la taille des textosw
   
-/* var nest = d3.nest().key(function(d) {return d.type;}).map(tab);  
-  
-  var nest_date = d3.nest()
-						.key(function(d) {return d.year;})
-						.key(function(d) {return d.month;})
-						.entries(tab);  
-						
-  var jeanne = nest[1],
-	  martin = nest[2];
-   var nest_length= d3.nest().key(function(d) {return d.length;}).map(tab);
-  var duree = ((tab[tab.length-1].date-tab[0].date)/(3600*1000))/24;
-  
-  // nombre de textos par jour
-  
-  //console.log("jeanne :"+jeanne.length/duree)
-  //console.log("martin :"+martin.length/duree)
-  
-  // heure moyenne d'envoi de textos
-  
-	//console.log("jeanne :"+d3.mean(jeanne, function(d, i) { return d.hour;}))
-	//console.log("jeanne :"+d3.mean(martin, function(d, i) { return d.hour;}))
-  
-  // nombre moyen, max de taille de caract�re txtos envoy�s
-  
-	//console.log("jeanne :"+d3.mean(jeanne, function(d, i) { return d.length;}))
-	//console.log("martin :"+d3.mean(martin, function(d) {return d.length;}))
-	//console.log(d3.mean(martin, function(d) {return length;})
-  
-var main = d3.select("#body").append("svg:svg");
-
- // Min / Max :  
-
-var max = d3.max(tab, function(d) {return d.length;});
-
-var width = d3.scale.linear().domain([10, max]).range([2, 5]),
-	year_scale = d3.scale.linear().domain([111, 112]).range([-10, 700]),
-	month_format = d3.time.format("%b"),
-	date_format = d3.time.format("%d %b %Y");
-
-function time_scale(d,m,y) {
-	
-	var mois = m,
-	 scale = d3.time.scale().domain([new Date("0"+m+"/"+"01"+"/"+y), new Date("0"+m+"/"+"30"+"/"+y)]).range([0,500]);
-	 
-	return scale(d);
-	
-	}
-	
-var year = main.selectAll(".year")
-	.data(nest_date)
-	.enter().append("svg:g")
-	.attr("class", "text")
-	.attr("transform", function(d) { return "translate(" + year_scale(d.key) + "," + 30 + ")"; })
-	
-year.append("text").text(function(d) {return "2" + d.key-100;}).attr("x", 400)
-	
-var month = year.selectAll(".month")
-	.data(function(d) {return d.values;})
-	.enter().append("svg:g")
-	.attr("class", "month");
-	
-month.append("svg:text")
-	.attr("y", function(d) {return d.key*50 + 30;})
-	.attr("x", 30)
-	.attr("class", "legend")
-	.text(function(d) {return month_format(new Date((parseFloat(d.key)+1).toString()));})
-
-var day = month.selectAll("circle")
-	.data(function(d) {return d.values;})
-	.enter().append("svg:circle")
-	.attr("cx", function(d) {return time_scale(d.date,d.month+1,"2"+d.year-100) + d.year;})
-	.attr("cy", function(d) {return d.month * 50 + 30 ;})
-	.attr("r", function(d) {return width(d.length);})
-	.on("mouseover", function(d) { 
-	
-	d3.select(this).attr("opacity", 0.6);
-	d3.select("#text").append("text").text(d.body + " le :"+date_format(d.date));})
-	.on("mouseout", function(d) { 
-	
-	d3.select(this).attr("opacity", 1);
-	d3.select("#text").selectAll("text").remove();})
-	.attr("fill", function(d) {  
-	
-	if ( d.type == 1) {return "red";}
-	
-		else 
-		
-			{ return "blue";}
-	})*/
+  d3.select("#taille").append("text").text((document.body.clientHeight*0.000264583).toFixed(2) +"  mètres");
   
 });

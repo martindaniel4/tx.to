@@ -1,4 +1,13 @@
-body {
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html class="no-js" lang="en">
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <script src="js/jquery.js"></script>
+    <style type="text/css">
+    	
+    body {
   margin: 0;
   padding: 0;
   background-color: white; }
@@ -40,11 +49,11 @@ font-size:14px;
 .cadre
 {
 	
-width:300px; 
+width:380px; 
 margin-left:auto; 
 margin-right:auto; 
-border-style:solid; 
-border-width:3px; 
+
+
 text-align:center;
 	
 }
@@ -54,7 +63,7 @@ text-align:center;
 font-size:11px; 
 font-family:Helvetica, sans-serif; 	
 margin-top:30px;
-margin-left:10px;
+margin-left:20px;
 	
 }
 
@@ -62,8 +71,8 @@ margin-left:10px;
 	
 font-size:11px; 
 font-family:Helvetica, sans-serif; 	
-margin-top:15;
-margin-left:70;
+margin-top:15px;
+margin-left:20px;
 	
 }
 
@@ -71,7 +80,7 @@ margin-left:70;
 .legende{
 
 font-family: "Helvetica Neue", Helvetica, sans-serif;
-font-size:16px;
+font-size:14px;
 text-rendering: optimizelegibility;
 
 }
@@ -103,7 +112,7 @@ font-size:14px;
 text-align:right;
 margin-left:110px;
 margin-top:10px;
-width:170px;
+width:250px;
 color:black;
 }
 
@@ -111,7 +120,7 @@ color:black;
 font-family: "Helvetica Neue", Helvetica, sans-serif;
 font-size:14px;
 text-align:left;
-width:170px;
+width:250px;
 margin-top:10px;
 margin-left:20px;
 color:black;
@@ -153,10 +162,10 @@ margin-bottom:30px;
 
 .dates {
 font-family: "Helvetica Neue", Helvetica, sans-serif;
-font-size:12px;
+font-size:9px;
 text-align:center;
 margin-bottom:10px;
-color:grey;
+color:black;
 }
 
 
@@ -189,5 +198,54 @@ shape-rendering:optimizeSpeed;
   stroke-width:1px;
 }
 
-
+    	
+    	
+    	
+    </style>
+    <script src="js/printer.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/d3.js"> </script>
+	
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+      	  $("#previewPage").click(Printer.previewPage);
+        $("#printPage").click(function() {
+          Printer.printPage("http://printer.gofreerange.com/print/4y5i4w6d8j0p6r0d", function(result) {
+            if (result.response == "ok") {
+              alert("Page successfully sent for printing");
+            } else {
+              alert("There was a problem sending this content");
+              console.log("Error response", result);
+            }
+          });
+        });
+      })
+    </script>
+  </head>
+  <body class="preview"> <!-- 3. -->
+    <div class="controls">
+    	<a id="previewPage" href="#">Preview</a>
+      <a id="printPage" href="#">Print</a>
+    <p id="taille">Longueur du tx.to :  </p>
+    </div>
+    <div class="paper"> <!-- 4. -->
+      <div class="content">
+       
+        <div id="body" class="cadre">
+       
+        	<div id="titre"> </div>
+  			<div id="nombre" class="nombre"> </div> 
+   			<div id="longueur" class="longueur">  </div>
+  			<div id="graph1" class="graph" > </div>
+  			<div id="graph2" class="graph" > </div>
+  			<div id="texts"> </div>
+       
+       </div>
+       
+      </div>
+      
+      <script type="text/javascript" src="js/txto_xml.js"></script>
+      
+    </div>
+  </body>
+</html>
 
