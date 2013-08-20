@@ -17,8 +17,7 @@
 
 	<div class="row"> 
 		<div class="span8" id="container"> </div>
-		<div class="span4" id="control"> 
-		</div>
+		<div class="span4" id="control"><h2 id="mCount"> </h2></div>
 	</div>
 
 <script type="text/javascript">
@@ -27,9 +26,10 @@
 
 var width = document.body.clientWidth,
 	height = 600,
-	widthRect = 10,
+	widthRect = 5,
 	heightRect = 0.3,
 	offsetX = 30,
+	espace = 8,
 	n = 5000; // number of total messages
 
 var circleX = d3.scale.linear().domain([0,1]).range([0,document.body.clientWidth]),
@@ -46,7 +46,7 @@ var container = d3.select("#container").append("svg:svg")
 					.attr("width",width)
 					.attr("height",height);
 
-var m_svg = container.selectAll("m.svg")
+/*var m_svg = container.selectAll("m.svg")
 	.data(data)
 .enter().append("svg:svg")
 	.attr("width",widthRect*2)
@@ -61,7 +61,21 @@ m_svg.selectAll("rect")
 	.attr("height",heightRect)
 	.attr("width",widthRect)
 	.attr("fill","grey")
-	.attr("y",function(d,i) {return i*1;});
+	.attr("y",function(d,i) {return i*1;});*/
+
+container.selectAll("rect")
+	.data(data)
+.enter().append("svg:rect")
+	.attr("width",widthRect)
+	.attr("height",1)
+	.attr("x",function(d,i) { return scaleX(d.type) + (Math.floor(d3.sum(data.slice(0,i),function(e) {return e.length;})/height)*(2*widthRect + espace)) + offsetX ;})
+	.attr("y",function(d,i) { return (d3.sum(data.slice(0,i),function(e) {return e.length;}))%height })
+	.attr("fill","grey")
+	/*.attr("stroke","black")
+	.attr("stroke-width",0.5)*/
+	.attr("opacity",0.4)
+	.attr("class",function(d) {return "rect"+d.msg;});
+
 	
 // Color n random rect
 
@@ -69,15 +83,17 @@ var nMsg = [];
 
 // Push 10 random messsages in an array
 
-for (i=0;i<600;i++) {nMsg.push(Math.ceil(Math.random()*n))} 
+for (i=0;i<50;i++) {nMsg.push(Math.ceil(Math.random()*n))} 
 
 // Color each corresponding message
 
 nMsg.forEach(function(d) {
 	
-	d3.selectAll(".rect"+d+" rect").attr("fill","orange");
+	d3.selectAll(".rect"+d).attr("fill","steelblue").attr("opacity",1).attr("stroke","none").attr("height",function(d) {return d.length;});
 	
 })
+
+
 
 </script>
 
