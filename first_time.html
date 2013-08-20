@@ -29,8 +29,8 @@ var width = document.body.clientWidth,
 	widthRect = 5,
 	heightRect = 0.3,
 	offsetX = 30,
-	espace = 8,
-	n = 5000; // number of total messages
+	espace = 10,
+	n = 4000; // number of total messages
 
 var circleX = d3.scale.linear().domain([0,1]).range([0,document.body.clientWidth]),
 	circleY = d3.scale.linear().domain([0,1]).range([0,800]),
@@ -89,7 +89,7 @@ for (i=0;i<50;i++) {nMsg.push(Math.ceil(Math.random()*n))}
 
 nMsg.forEach(function(d) {
 	
-	d3.selectAll(".rect"+d).attr("fill","steelblue").attr("opacity",1).attr("stroke","none").attr("height",function(d) {return d.length;});
+	d3.selectAll(".rect"+d).attr("fill","steelblue").attr("opacity",0.6).attr("height",function(d) {return d.length;});
 	
 })
 
