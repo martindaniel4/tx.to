@@ -8,20 +8,29 @@
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="Martin Daniel">
 	<script src="js/d3v2.js" type="text/javascript"></script>
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap.js" type="text/javascript"></script>
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.css">
 	<!-- Date: 2013-07-30 -->
 </head>
 <body>
-	<div id="container"> </div>
+
+	<div class="row"> 
+		<div class="span8" id="container"> </div>
+		<div class="span4" id="control"> 
+		</div>
+	</div>
 
 <script type="text/javascript">
 
 // variables
 
-var width = 1800,
+var width = document.body.clientWidth,
 	height = 600,
 	widthRect = 10,
 	heightRect = 0.3,
-	offsetX = 40;
+	offsetX = 30,
+	n = 5000; // number of total messages
 
 var circleX = d3.scale.linear().domain([0,1]).range([0,document.body.clientWidth]),
 	circleY = d3.scale.linear().domain([0,1]).range([0,800]),
@@ -31,7 +40,7 @@ var circleX = d3.scale.linear().domain([0,1]).range([0,document.body.clientWidth
 var scale1 = d3.scale.linear().domain([0,1]).range([1,2]),
 	scale2 = d3.scale.linear().domain([0,1]).range([1,5]),
 	scaleX = d3.scale.ordinal().domain("1","2").range([offsetX,offsetX+widthRect]),
-	data = d3.range(1,1000).map(function(d) {return {msg:d,type:scale1(Math.random()).toFixed(0),length:Math.ceil(scale2(Math.random()))};});
+	data = d3.range(1,n).map(function(d) {return {msg:d,type:scale1(Math.random()).toFixed(0),length:Math.ceil(scale2(Math.random()))};});
 
 var container = d3.select("#container").append("svg:svg")
 					.attr("width",width)
@@ -60,7 +69,7 @@ var nMsg = [];
 
 // Push 10 random messsages in an array
 
-for (i=0;i<100;i++) {nMsg.push(Math.ceil(Math.random()*1000))} 
+for (i=0;i<600;i++) {nMsg.push(Math.ceil(Math.random()*n))} 
 
 // Color each corresponding message
 
