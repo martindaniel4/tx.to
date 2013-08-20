@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>1st time</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Martin Daniel">
+	<script src="js/d3v2.js" type="text/javascript"></script>
+	<!-- Date: 2013-07-30 -->
+</head>
+<body>
+	<div id="container"> </div>
+
+<script type="text/javascript">
+
+// variables
+
+var width = 1800,
+	height = 600,
+	widthRect = 10,
+	heightRect = 0.3,
+	offsetX = 40;
+
+var circleX = d3.scale.linear().domain([0,1]).range([0,document.body.clientWidth]),
+	circleY = d3.scale.linear().domain([0,1]).range([0,800]),
+	r = d3.scale.linear().domain([0,1]).range([4,10]),
+	color = d3.scale.ordinal().domain("1","2").range(["blue","pink"]);
+
+var scale1 = d3.scale.linear().domain([0,1]).range([1,2]),
+	scale2 = d3.scale.linear().domain([0,1]).range([1,5]),
+	scaleX = d3.scale.ordinal().domain("1","2").range([offsetX,offsetX+widthRect]),
+	data = d3.range(1,1000).map(function(d) {return {msg:d,type:scale1(Math.random()).toFixed(0),length:Math.ceil(scale2(Math.random()))};});
+
+var container = d3.select("#container").append("svg:svg")
+					.attr("width",width)
+					.attr("height",height);
+
+var m_svg = container.selectAll("m.svg")
+	.data(data)
+.enter().append("svg:svg")
+	.attr("width",widthRect*2)
+	.attr("height",function(d) {return (d.length)*8;})
+	.attr("x",function(d,i) {return scaleX(d.type) + Math.floor((i*5)/height)*widthRect*3 + offsetX ;})
+	.attr("y",function(d,i) {return (i*5)%height;})
+	.attr("class",function(d) {return "rect"+d.msg;});
+
+m_svg.selectAll("rect")
+	.data(function(d) {return d3.range(d.length);})
+.enter().append("svg:rect")
+	.attr("height",heightRect)
+	.attr("width",widthRect)
+	.attr("fill","grey")
+	.attr("y",function(d,i) {return i*1;});
+	
+// Color n random rect
+
+var nMsg = [];
+
+// Push 10 random messsages in an array
+
+for (i=0;i<100;i++) {nMsg.push(Math.ceil(Math.random()*1000))} 
+
+// Color each corresponding message
+
+nMsg.forEach(function(d) {
+	
+	d3.selectAll(".rect"+d+" rect").attr("fill","orange");
+	
+})
+
+</script>
+
+
+</body>
+</html>
